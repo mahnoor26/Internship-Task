@@ -1,29 +1,88 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowDown,
+  faArrowUp,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Products() {
-  // const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
+  const [sortOrder, setSortOrder] = useState(""); // "asc" for ascending, "desc" for descending
+  const [sortField, setSortField] = useState("name"); // Default field for sorting
+  const header = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const params = Object.fromEntries([...searchParams]);
 
-  // const readData = () => {
-  //   axios
-  //     .get("https://63498b7ba59874146b229cfd.mockapi.io/api/crud")
-  //     .then((res) => {
-  //       console.log(res.data);
-  //       setData(res.data);
-  //     });
-  // };
+  const getData = () => {
+    const _params = { page: params.page ?? 1, limit: params.limit ?? 10 };
+    if (params?.field && params.order) {
+      _params.field = params.field;
+      _params.order = params.order;
+    }
 
-  // function handleDelete(id) {
-  //   axios
-  //     .delete(`https://63498b7ba59874146b229cfd.mockapi.io/api/crud/${id}`)
-  //     .then(() => {
-  //       readData();
-  //     });
-  // }
+    const sortParams = _params.field
+      ? { field: _params.field, order: _params.order }
+      : null;
+
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}/product/`, {
+        headers: {
+          Authorization: `Bearer ${header}`,
+          "Content-Type": "multipart/form-data",
+        },
+        params: {
+          ..._params,
+          sortBy: sortParams ? JSON.stringify(sortParams) : undefined,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.results);
+        setData(res.data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  const handleSort = (order, field) => {
+    setSortOrder(order);
+    setSortField(field);
+
+    navigate({
+      search: new URLSearchParams({
+        order,
+        field,
+        page: params.page ?? 1,
+        limit: params.limit ?? 10,
+      }).toString(),
+    });
+  };
+
+  useEffect(() => {
+    getData(); // Fetch the first 10 products on page 1 initially
+  }, [searchParams]);
+
+  function handleDelete(id) {
+    axios
+      .delete(`${process.env.REACT_APP_BACKEND_URL}/product/${id}`, {
+        headers: {
+          Authorization: `Bearer ${header}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        getData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <>
@@ -34,79 +93,71 @@ function Products() {
             Create New
           </button>
         </Link>
-        {/* <Link to="/create">
-          <Button type="submit" variant="primary">
-            Create New
-          </Button>
-        </Link> */}
-        <table class="table container-fluid">
+        <table className="table container-fluid">
           <thead>
             <tr>
               <th scope="col">Sr</th>
               <th scope="col">Product Image</th>
-              <th scope="col">Product Name</th>
+              <th scope="col">
+                <span className="px-1">Product Name</span>
+                <FontAwesomeIcon
+                  icon={faArrowUp}
+                  onClick={() => handleSort("asc", "name")}
+                />{" "}
+                <FontAwesomeIcon
+                  icon={faArrowDown}
+                  onClick={() => handleSort("desc", "name")}
+                />
+              </th>
               <th scope="col">Category</th>
-              <th scope="col">Price</th>
+              <th scope="col">
+                <span className="px-1">Product Price</span>
+                <FontAwesomeIcon
+                  icon={faArrowUp}
+                  onClick={() => handleSort("asc", "price")}
+                />{" "}
+                <FontAwesomeIcon
+                  icon={faArrowDown}
+                  onClick={() => handleSort("desc", "price")}
+                />
+              </th>
               <th scope="col"></th>
               <th scope="col"></th>
             </tr>
           </thead>
-          {/* {data.map((formData) => { */}
-          {/* return (
-              <> */}
           <tbody>
-            <tr>
-              <th scope="row">{/* {formData.id} */}</th>
-              <td>
-                {/* {formData.image} */}
-                erte
-              </td>
-              <td>
-                {/* {formData.name} */}
-                ret
-              </td>
-              <td>
-                {/* {formData.price} */}
-                efr
-              </td>
-              <td>
-                {/* {formData.category}  */}
-                effea
-              </td>
-              <td>
-                <Link to={`/user-dashboard/products/update/0`}>
+            {data.map((formData, index) => (
+              <tr key={formData._id}>
+                <th scope="row">{index + 1}</th>
+                <td>
+                  <img
+                    src={formData.image}
+                    alt={formData.name}
+                    style={{ maxWidth: "100px" }}
+                  />
+                </td>
+                <td>{formData.name}</td>
+                <td>{formData.category?.name}</td>
+                <td>{formData.price}</td>
+                <td>
+                  <Link to={`/user-dashboard/products/update/${formData._id}`}>
+                    <Button variant="light">
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                    </Button>
+                  </Link>
+                </td>
+                <td>
                   <Button
+                    className="btn-danger"
+                    onClick={() => handleDelete(formData._id)}
                     variant="light"
-                    
-                    // className="btn"
-                    //   onClick={() => {
-                    //     setLocalStorage(
-                    //       formData.id,
-                    //       formData.image,
-                    //       formData.name,
-                    //       formData.price,
-                    //       formData.description
-                    //     );
-                    //   }}
                   >
-                    <FontAwesomeIcon icon={faPenToSquare} />
+                    <FontAwesomeIcon icon={faTrash} />
                   </Button>
-                </Link>
-              </td>
-              <td>
-                <Button
-                  className="btn-danger"
-                  // onClick={() => handleDelete(formData.id)}
-                  variant="light"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-              </td>
-            </tr>
+                </td>
+              </tr>
+            ))}
           </tbody>
-          {/* </>
-            );
-          })} */}
         </table>
       </div>
     </>

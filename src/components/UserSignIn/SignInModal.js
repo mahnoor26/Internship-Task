@@ -17,15 +17,16 @@ function SignInModal() {
         id="signupModal"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Sign Up</Modal.Title>
+          <Modal.Title>Sign In </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="mx-auto">
           <Form>
-            <Button variant="primary" className="mb-3" onClick={() => handleSignupModal(true)}>
-              SignIn as an Admin
+            <Button variant="primary" className="my-3 shadow" onClick={() => handleSignupModal(true)}>
+              Sign in as an Admin
             </Button>
-            <Button variant="primary" className="mb-3" onClick={() => handleSigninBtnsModal(true)}>
-              SignIn as an User
+            <br/>
+            <Button variant="primary" className="mt-2 mb-3 shadow" onClick={() => handleSigninBtnsModal(true)}>
+              Sign in as an User
             </Button>
           </Form>
         </Modal.Body>

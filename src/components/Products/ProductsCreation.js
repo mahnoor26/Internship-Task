@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/esm/Button";
-import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 
 function ProductsCreation() {
@@ -19,10 +18,18 @@ function ProductsCreation() {
 
   useEffect(() => {
     // Fetch categories when the component mounts
-    axios.get(`${process.env.REACT_APP_BACKEND_URL}/category`)
-      .then((res) => {
-        setCategories(res.data);
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}/category`, {
+        headers: {
+          Authorization: `Bearer ${header}`,
+          "Content-Type": "multipart/form-data", // Important for sending files
+        },
+        params: {
+          limit: 6,
+          page: 1,
+        },
       })
+      .then((res) => setCategories(res.data.results))
       .catch((error) => {
         console.error("Error fetching categories:", error);
       });
@@ -104,7 +111,7 @@ function ProductsCreation() {
             >
               <option value="">Select a category</option>
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>
+                <option key={category._id} value={category._id}>
                   {category.name}
                 </option>
               ))}

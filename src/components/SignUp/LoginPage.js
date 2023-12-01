@@ -158,8 +158,7 @@ function LoginPage({ show, handleClose }) {
         </Modal.Body>
       </Modal>
       <ToastContainer />
-      <SignupPage/>
-    </>
+      </>
   );
 }
 
