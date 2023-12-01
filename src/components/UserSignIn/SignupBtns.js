@@ -14,7 +14,8 @@ function SignupBtns({ handleClose }) {
   const [phone, setPhone] = useState("");
   const [user, setUser] = useState(null);
   const [otp, setOtp] = useState("");
-  const {isSigninBtnsModalOpen, handleSigninBtnsModal} = useContext(UIContext)
+  const { isSigninBtnsModalOpen, handleSigninBtnsModal } =
+    useContext(UIContext);
 
   const handleGoogleClick = () => {
     signInWithPopup(auth, provider).then((data) => {
@@ -22,18 +23,21 @@ function SignupBtns({ handleClose }) {
         userName: data.user.displayName,
         email: data.user.email,
         profilePicture: data.user.photoURL,
-        accessToken: data.user.accessToken,
       };
+      localStorage.setItem('accessToken', data.user.accessToken);
       axios
         .post(
-          `${process.env.REACT_APP_BACKEND_URL}/users/signup/google`,
+          `${process.env.REACT_APP_BACKEND_URL}/users/user/signup/google`,
           userData,
           {
-            headers: {},
+            headers: {
+              Authorization: `Bearer ${data.user.accessToken}`,
+              "Content-Type": "multipart/form-data",
+            },
           }
         )
         .then((res) => {
-          toast.success();
+          // toast.success();
 
           console.log("Sign successful");
           // handleClose();
@@ -49,6 +53,7 @@ function SignupBtns({ handleClose }) {
     try {
       const confirmation = await signInWithPhoneNumber(auth, phone);
       setUser(confirmation); // Save the confirmation result
+      console.log("OTP sent successfully");
     } catch (e) {
       console.error(e);
     }
@@ -56,8 +61,8 @@ function SignupBtns({ handleClose }) {
 
   const verifyOtp = async () => {
     try {
-      await user.confirm(otp); // Change this line to confirmation.confirm(otp);
-      console.log("OTP verified");
+      await user.confirm(otp);
+      console.log("OTP verified successfully");
       handleClose();
     } catch (e) {
       console.error(e);
@@ -78,47 +83,40 @@ function SignupBtns({ handleClose }) {
         <Modal.Header closeButton>
           <Modal.Title>Sign Up</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="mx-auto text-center">
           <Form>
             <button
               type="submit"
-              className="btn rounded-pill mb-3 shadow"
+              className="btn rounded-pill mb-3 shadow-sm"
               onClick={handleGoogleClick}
               style={{ borderColor: "#000000" }}
             >
               <FontAwesomeIcon icon={faGoogle} style={{ color: "#e22828" }} />
               <span className="px-3">SignIn with Google</span>
             </button>
+            <br />
+            or
+            <br />
+            <p className="my-3">Sign In With Phone</p>
             <div className="phone-content">
               <div className="phone-input">
                 <PhoneInput
-                  country={"pakistan"}
+                  country={"pk"}
                   value={phone}
-                  onChange={(phone) => setPhone("+" + phone)}
+                  onChange={(phone) => setPhone(phone)}
                   placeholder="Enter your phone number"
                 />
-                <Button
-                  onClick={sendOtp}
-                  sx={{ marginTop: "10px" }}
-                  variant="contained"
-                >
-                  Send OTP
+                <Button className="mt-2" onClick={sendOtp} variant="primary">
+                  Send Code
                 </Button>
                 <FormControl
-                  sx={{ marginTop: "10px", width: "300px" }}
+                  className="mt-4"
                   onChange={(e) => setOtp(e.target.value)}
-                  variant="outlined"
                   size="small"
-                  label="Enter OTP"
+                  placeholder="Enter Verification Code"
                 />
-                <br />
-                <Button
-                  onClick={verifyOtp}
-                  sx={{ marginTop: "10px" }}
-                  variant="contained"
-                  color="success"
-                >
-                  Verify OTP
+                <Button className="mt-2" onClick={verifyOtp} variant="primary">
+                  Verify Code
                 </Button>
               </div>
             </div>

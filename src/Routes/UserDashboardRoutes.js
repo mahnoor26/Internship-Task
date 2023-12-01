@@ -6,10 +6,11 @@ import { Route, Routes } from "react-router-dom";
 import DashboardPage from "../components/UserDashboard/DashboardPage";
 import Products from "../components/Products/Products";
 import ProductsCreation from "../components/Products/ProductsCreation";
-import ProductsUpdate from "../components/Products/ProductsUpdate";
 import Categories from "../components/Categories/Categories";
 import CategoriesCreation from "../components/Categories/CategoriesCreation";
 import CategoriesUpdate from "../components/Categories/CategoriesUpdate";
+import ProductUpdate from "../components/Products/ProductUpdate";
+import CategoryUpdate from "../components/Categories/CategoryUpdate";
 
 function UserDashboardRoutes() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -31,10 +32,10 @@ function UserDashboardRoutes() {
           <Route path="/" element={<DashboardPage />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/create" element={<ProductsCreation />} />
-          <Route path="/products/update/0" element={<ProductsUpdate />} />
+          <Route path="/products/update/:id" element={<ProductUpdate />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/create" element={<CategoriesCreation />} />
-          <Route path="/categories/update/0" element={<CategoriesUpdate />} />
+          <Route path="/categories/update/:id" element={<CategoryUpdate />} />
         </Routes>
         {/* <Route path='/about' element={<AboutPage />} />
                 <Route path='/services' element={<ServicesPage />} /> */}

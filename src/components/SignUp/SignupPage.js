@@ -178,7 +178,6 @@ function SignupPage() {
                   Login
                 </button>
               </Form.Text>
-              {/* <SignupBtns/> */}
             </div>
           </Form>
         </Modal.Body>
