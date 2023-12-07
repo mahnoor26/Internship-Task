@@ -15,25 +15,25 @@ function ViewProducts() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const params = Object.fromEntries([...searchParams]);
-  
+
   const getData = () => {
     const _params = { page: params.page ?? 1, limit: params.limit ?? 10 };
-    if(params?.category){
+    if (params?.category) {
       _params.category = params.category;
     }
     axios
-     .get(`${process.env.REACT_APP_BACKEND_URL}/product/`, {
-        headers: {
-          Authorization: `Bearer ${header}`,
-          "Content-Type": "multipart/form-data",
-        },
+      .get(`${process.env.REACT_APP_BACKEND_URL}/product`, {
+        // headers: {
+        //   // Authorization: `Bearer ${header}`,
+        //   // "Content-Type": "multipart/form-data",
+        // },
         params: _params,
       })
-     .then((res) => {
+      .then((res) => {
         // console.log(res.data.results);
         setData(res.data.results);
       })
-     .catch((error) => {
+      .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
@@ -59,14 +59,14 @@ function ViewProducts() {
       setSelectedCategory(params.category);
     }
   }, [searchParams]);
-  
+
   useEffect(() => {
     // Fetch categories when the component mounts
     axios
       .get(`${process.env.REACT_APP_BACKEND_URL}/category/`, {
         headers: {
-          Authorization: `Bearer ${header}`,
-          "Content-Type": "multipart/form-data",
+          // Authorization: `Bearer ${header}`,
+          // "Content-Type": "multipart/form-data",
         },
         params: {
           limit: 100,
@@ -113,7 +113,11 @@ function ViewProducts() {
         <Row xs={1} md={4} className="g-4">
           {data.map((formData) => (
             <Col key={formData.id}>
-              <div className="card shadow pt-3 px-1">
+              <div
+                className="card shadow pt-3 px-1"
+                onClick={() => navigate(`/product/${formData._id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className="container services-img mb-0">
                   <img
                     src={formData.image}

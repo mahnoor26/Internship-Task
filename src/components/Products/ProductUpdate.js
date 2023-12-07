@@ -2,8 +2,9 @@ import axios from "axios";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import { Button, FloatingLabel, Form, ToastContainer } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function ProductUpdate() {
   const id = useParams()?.id ?? "";
@@ -11,8 +12,8 @@ function ProductUpdate() {
     name: "",
     description: "",
     price: "",
-    product_image: "",
     category: "",
+    product_image: "",
   });
   const [categories, setCategories] = useState([]);
   const navi = useNavigate();
@@ -66,16 +67,30 @@ function ProductUpdate() {
   const handleUpdate = (e) => {
     e.preventDefault();
 
+    const updatedData = new FormData();
+    updatedData.append("name", data.name);
+    updatedData.append("description", data.description);
+    updatedData.append("price", data.price);
+    updatedData.append("category", data.category._id); // Assuming _id is the category identifier
+    if (typeof data.product_image === "object") {
+      updatedData.append("product_image", data.product_image);
+    }
+
     axios
-      .patch(`${process.env.REACT_APP_BACKEND_URL}/product/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${header}`,
-          "Content-Type": "multipart/form-data",
-        },
-        
-      })
+      .patch(
+        `${process.env.REACT_APP_BACKEND_URL}/product/${id}`,
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${header}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then(() => {
-        console.log(data.product_image);
+        toast.success("Product updated successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         navi("/user-dashboard/products");
       })
       .catch((error) => {
@@ -193,6 +208,7 @@ function ProductUpdate() {
           </Link> */}
         </Form>
       </div>
+      <ToastContainer />
     </>
   );
 }

@@ -9,6 +9,8 @@ import {
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function Products() {
   const [data, setData] = useState([]);
@@ -78,6 +80,9 @@ function Products() {
       })
       .then(() => {
         getData();
+        toast.success("Product deleted successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -160,6 +165,7 @@ function Products() {
           </tbody>
         </table>
       </div>
+      <ToastContainer />
     </>
   );
 }

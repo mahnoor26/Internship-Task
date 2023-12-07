@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function CategoryUpdate() {
   const id = useParams()?.id ?? "";
@@ -42,15 +43,30 @@ function CategoryUpdate() {
   const handleUpdate = (e) => {
     e.preventDefault();
 
+    const updatedData = new FormData();
+    updatedData.append("name", data.name);
+    updatedData.append("description", data.description);
+
+    if (typeof data.category_image === "object") {
+      updatedData.append("category_image", data.category_image);
+    }
+
     axios
-      .patch(`${process.env.REACT_APP_BACKEND_URL}/category/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${header}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .patch(
+        `${process.env.REACT_APP_BACKEND_URL}/category/${id}`,
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${header}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then(() => {
-        console.log(data.product_image);
+        toast.success("Category updated successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        // console.log(data.product_image);
         navi("/user-dashboard/categories");
       })
       .catch((error) => {
@@ -61,8 +77,8 @@ function CategoryUpdate() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setData({ ...data, product_image: file });
-      document.getElementById("frame").src = URL.createObjectURL(file);
+      setData((prev) =>({ ...prev, category_image: file }));
+      // document.getElementById("frame").src = URL.createObjectURL(file);
     }
   };
   return (
@@ -111,26 +127,23 @@ function CategoryUpdate() {
               className="mt-2"
               id="frame"
               src={
-                typeof data?.image === "object"
-                  ? URL.createObjectURL(data.image)
-                  : data.image
+                typeof data?.category_image === "object"
+                  ? URL.createObjectURL(data.category_image)
+                  : data.category_image
               }
               width="150px"
               alt="Preview"
             />
           </div>
-
           <Button
             className="btn btn-primary px-5 rounded-pill"
             onClick={handleUpdate}
           >
             Update
           </Button>
-          {/* <Link to="/user-dashboard/products">
-            <Button className="btn btn-primary">Show Data</Button>
-          </Link> */}
         </Form>
       </div>
+      <ToastContainer />
     </>
   );
 }

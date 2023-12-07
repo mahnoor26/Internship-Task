@@ -8,9 +8,9 @@ import Products from "../components/Products/Products";
 import ProductsCreation from "../components/Products/ProductsCreation";
 import Categories from "../components/Categories/Categories";
 import CategoriesCreation from "../components/Categories/CategoriesCreation";
-import CategoriesUpdate from "../components/Categories/CategoriesUpdate";
 import ProductUpdate from "../components/Products/ProductUpdate";
 import CategoryUpdate from "../components/Categories/CategoryUpdate";
+import UserDetails from "../components/UserDetails/UserDetails";
 
 function UserDashboardRoutes() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
@@ -30,6 +30,7 @@ function UserDashboardRoutes() {
 
         <Routes>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/users-details" element={<UserDetails />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/create" element={<ProductsCreation />} />
           <Route path="/products/update/:id" element={<ProductUpdate />} />

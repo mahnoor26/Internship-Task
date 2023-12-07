@@ -1,13 +1,13 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import LoginPage from "./SignUp/LoginPage";
 import { UIContext } from "../context/uiContext";
 import DashboardBtn from "./UserDashboard/DashboardBtn";
 import SignInModal from "./UserSignIn/SignInModal";
 
 function Navbar() {
-  const { handleLoginModal, handleSigninModal } = useContext(UIContext)
-  const isLogged = localStorage.getItem("accessToken")
+  const { handleSigninModal } = useContext(UIContext);
+  const isLogged = localStorage.getItem("accessToken");
+  const isAdmin = localStorage.getItem("accessToken");
 
   return (
     <>
@@ -19,7 +19,15 @@ function Navbar() {
           <Link to="/" className="navbar-brand">
             Logo
           </Link>
-          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
             <span className="navbar-toggler-icon"></span>
           </button>
 
@@ -47,29 +55,25 @@ function Navbar() {
               </li>
             </ul>
             <div className="navbar-buttons">
-              {isLogged ? (<DashboardBtn/>) :  
-             (
-             <>
-             {/* <button
-                className="btn mx-3 px-3"
-                onClick={() => handleLoginModal(true)}
-                style={{ borderColor: "#145da0", color: "#145da0" }}
-              >
-                Login
-              </button> */}
-              <button
-                className="btn btn-primary px-3"
-                onClick={() => handleSigninModal(true)}
-                style={{ backgroundColor: "#145da0" }}
-              >
-                Sign In
-              </button> 
-              </>)
-              }
+              {isLogged ? (
+                isAdmin ? (
+                  <DashboardBtn />
+                ) : null
+              ) : (
+                <>
+                  <button
+                    className="btn btn-primary px-3"
+                    onClick={() => handleSigninModal(true)}
+                    style={{ backgroundColor: "#145da0" }}
+                  >
+                    Sign In
+                  </button>
+                </>
+              )}
             </div>
           </div>
-        </div >
-      </nav >
+        </div>
+      </nav>
       <SignInModal />
     </>
   );

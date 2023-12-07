@@ -38,6 +38,11 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
             <BsFillGrid3X3GapFill className="icon" /> Categories
           </Link>
         </li>
+        <li className="sidebar-list-item">
+          <Link to="/user-dashboard/users-details" className="nav-link">
+            <BsFillGrid3X3GapFill className="icon" /> Users
+          </Link>
+        </li>
       </ul>
     </aside>
   );
