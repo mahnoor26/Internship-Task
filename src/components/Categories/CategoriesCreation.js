@@ -5,6 +5,8 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/esm/Button";
 import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-bootstrap";
 
 function CategoriesCreation() {
   const [name, setName] = useState("");
@@ -36,6 +38,9 @@ function CategoriesCreation() {
       )
       .then((res) => {
         console.log(res);
+        toast.success("Category created successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         data("/user-dashboard/categories");
       })
       .catch((error) => {
@@ -99,13 +104,9 @@ function CategoriesCreation() {
           >
             Create
           </Button>
-          {/* <Link to="/user-dashboard/Categorys">
-            <Button type="submit" className="btn btn-primary">
-              Show Data
-            </Button>
-          </Link> */}
         </Form>
       </div>
+      <ToastContainer />
     </>
   );
 }

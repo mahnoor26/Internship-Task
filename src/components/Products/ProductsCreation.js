@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/Form";
+import { toast } from "react-toastify";
 
 function ProductsCreation() {
   const [name, setName] = useState("");
@@ -56,6 +57,9 @@ function ProductsCreation() {
         }
       )
       .then(() => {
+        toast.success("Product created successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         data("/user-dashboard/products");
       })
       .catch((error) => {

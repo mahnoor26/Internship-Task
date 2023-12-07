@@ -51,7 +51,7 @@ function LoginPage({ show, handleClose }) {
     if (isValid) {
       // Submit the form
       axios
-        .post(`${process.env.REACT_APP_BACKEND_URL}/users/login/admin`, user)
+        .post(`${process.env.REACT_APP_BACKEND_URL}/users/admin/login`, user)
         .then((response) => {
             console.log(response.data);
             toast.success("Successfully Logged In!", {

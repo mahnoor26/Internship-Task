@@ -9,6 +9,8 @@ import {
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-bootstrap";
 
 function Categories() {
   const [data, setData] = useState([]);
@@ -77,6 +79,9 @@ function Categories() {
         },
       })
       .then(() => {
+        toast.success("Category deleted successfully", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
         getData();
       })
       .catch((error) => {
@@ -85,70 +90,73 @@ function Categories() {
   }
 
   return (
-    <div className="container p-5">
-      <h2 className="mb-3">Categories Section</h2>
-      <Link to="/user-dashboard/categories/create">
-        <button type="submit" className="btn btn-primary mb-3">
-          Create New
-        </button>
-      </Link>
-      <table className="table container-fluid">
-        <thead>
-          <tr>
-            <th scope="col">Sr</th>
-            <th scope="col">Category Image</th>
-            <th scope="col">
-              <span className="px-1">Category Name</span>
-              <FontAwesomeIcon
-                icon={faArrowUp}
-                onClick={() => handleSort("asc", "name")}
-              />{" "}
-              <FontAwesomeIcon
-                icon={faArrowDown}
-                onClick={() => handleSort("desc", "name")}
-              />
-            </th>
-            <th scope="col">Description</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((formData, index) => (
-            <tr key={formData._id}>
-              <th scope="row">{index + 1}</th>
-              <td>
-                <img
-                  src={formData.image}
-                  alt={formData.name}
-                  style={{ maxWidth: "100px" }}
+    <>
+      <div className="container p-5">
+        <h2 className="mb-3">Categories Section</h2>
+        <Link to="/user-dashboard/categories/create">
+          <button type="submit" className="btn btn-primary mb-3">
+            Create New
+          </button>
+        </Link>
+        <table className="table container-fluid">
+          <thead>
+            <tr>
+              <th scope="col">Sr</th>
+              <th scope="col">Category Image</th>
+              <th scope="col">
+                <span className="px-1">Category Name</span>
+                <FontAwesomeIcon
+                  icon={faArrowUp}
+                  onClick={() => handleSort("asc", "name")}
+                />{" "}
+                <FontAwesomeIcon
+                  icon={faArrowDown}
+                  onClick={() => handleSort("desc", "name")}
                 />
-              </td>
-              <td>{formData.name}</td>
-              <td>{formData.description}</td>
-              <td>
-                <Link
-                  to={`/user-dashboard/categories/update/${formData._id}`}
-                  // onClick={() => setEditDataInLocalStorage(formData)}
-                >
-                  <Button variant="light">
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                  </Button>
-                </Link>
-              </td>
-              <td>
-                <Button
-                  variant="light"
-                  onClick={() => handleDelete(formData._id)}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </Button>
-              </td>
+              </th>
+              <th scope="col">Description</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {data.map((formData, index) => (
+              <tr key={formData._id}>
+                <th scope="row">{index + 1}</th>
+                <td>
+                  <img
+                    src={formData.image}
+                    alt={formData.name}
+                    style={{ maxWidth: "100px" }}
+                  />
+                </td>
+                <td>{formData.name}</td>
+                <td>{formData.description}</td>
+                <td>
+                  <Link
+                    to={`/user-dashboard/categories/update/${formData._id}`}
+                    // onClick={() => setEditDataInLocalStorage(formData)}
+                  >
+                    <Button variant="light">
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                    </Button>
+                  </Link>
+                </td>
+                <td>
+                  <Button
+                    variant="light"
+                    onClick={() => handleDelete(formData._id)}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ToastContainer />
+    </>
   );
 }
 
